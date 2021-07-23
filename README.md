@@ -54,9 +54,18 @@ services:
     restart: always
     ports:
       - 8881:8881
+    
+  user-ms:
+    build: ./user-microservice
+    restart: always
+    ports:
+      - 8882:8882
+    depends_on: 
+      - postgresql
+      - kafka
 
   product-ms:
-    build: ./product
+    build: ./product-microservice
     restart: always
     ports:
       - 8888:8888
