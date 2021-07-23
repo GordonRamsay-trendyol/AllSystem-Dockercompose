@@ -25,7 +25,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       ALLOW_PLAINTEXT_LISTENER: "yes"
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
-      KAFKA_CREATE_TOPICS: "product.update:3:1,product.create:3:1"
+      KAFKA_CREATE_TOPICS: "product.update:3:1,product.create:3:1,notification:3:1"
     depends_on:
       - zookeeper
 
@@ -40,6 +40,14 @@ services:
       POSTGRES_DB: trendxdb
       POSTGRES_PORT: 5432
       POSTGRES_HOST: 127.0.0.1
+  
+  # run the setup.sh script under user-follows-product
+  couchbase:
+    image: couchbase:latest
+    restart: always
+    ports:
+      - 8091-8094:8091-8094
+      - 11210-11211:11210-11211
 
   apigw:
     build: ./apigateway
@@ -54,6 +62,15 @@ services:
       - 8888:8888
     depends_on:
       - postgresql
+      - kafka
+
+  user-follows-product-ms:
+    build: ./user-follows-product-microservice
+    ports:
+      - 8887:8887
+    restart: always
+    depends_on:
+      - couchbase
       - kafka
 
 ```
