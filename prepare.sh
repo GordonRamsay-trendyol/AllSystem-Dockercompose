@@ -15,3 +15,6 @@ docker exec -t $container couchbase-cli bucket-create -c localhost -u Administra
 docker exec -t $container couchbase-cli user-manage -c localhost -u Administrator -p password \
   --set --rbac-username myapp --rbac-name myapp --rbac-password 123321 --roles admin \
   --auth-domain local
+
+docker exec -t $container cbq -e couchbase://couchbase -u Administrator -p password \
+  --script="create primary index followed_products on followed_products;"
