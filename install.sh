@@ -1,29 +1,24 @@
-echo "User microservice clone and compilation started.."
-git clone https://github.com/GordonRamsay-Trendyol/user-microservice.git
-cd user-microservice
-./mvnw package -DskipTests=true
-cd ..
+function clone_and_build() {
+    microservice_folder=$1
+    is_java_project=$2
 
-echo "Product microservice clone and compilation started.."
-git clone https://github.com/GordonRamsay-Trendyol/product-microservice.git
-cd product-microservice
-./mvnw package -DskipTests=true
-cd ..
+    echo "$microservice_folder clone started.."
 
-echo "ApiGateway clone and compilation started.."
-git clone https://github.com/GordonRamsay-Trendyol/apigateway.git
-cd apigateway
-./mvnw package -DskipTests=true
-cd ..
+    git clone https://github.com/GordonRamsay-Trendyol/$microservice_folder.git
 
-echo "UserFollowsProduct microservice clone and compilation started.."
-git clone https://github.com/GordonRamsay-Trendyol/user-follows-product-microservice.git
-cd user-follows-product-microservice
-./mvnw package -DskipTests=true
-cd ..
+    if $is_java_project ; then
+        echo "$microservice_folder compilation started.."
+        cd $microservice_folder
+        ./mvnw package -DskipTests=true
+        cd ..
+    fi
+}
 
-echo "NotificationManager microservice clone and compilation started.."
-git clone https://github.com/GordonRamsay-Trendyol/notification-manager-microservice.git
+clone_and_build "user-microservice" true
+clone_and_build "product-microservice" true
+clone_and_build "apigateway" true
+clone_and_build "user-follows-product-microservice" true
+clone_and_build "notification-manager-microservice" false
 
 echo "Docker composing started.."
 docker compose up -d --build
